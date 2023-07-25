@@ -1,0 +1,619 @@
+{
+  "flights": {
+    "alias": "kibana_sample_data_flights",
+    "mappings": [
+      "Cancelled",
+      "Carrier",
+      "Dest",
+      "DestAirportID",
+      "DestCityName",
+      "DestCountry",
+      "DestRegion",
+      "DestWeather",
+      "FlightDelay",
+      "FlightDelayType",
+      "FlightNum",
+      "FlightTimeHour",
+      "Origin",
+      "OriginAirportID",
+      "OriginCityName",
+      "OriginCountry",
+      "OriginRegion",
+      "OriginWeather",
+      "timestamp"
+    ],
+    "description": "This dataset can be used to query the flights data in elastic. It contains flight information from one city to another and can answer questions like: \"How many flights have there been between London and Paris?\" Or \"Which city had the most incoming flights in the last year?\"",
+    "sampleData": [
+      {
+        "_index": "kibana_sample_data_flights",
+        "_id": "HqmMTIkBSmemQElgy_g_",
+        "_score": 1.0,
+        "_source": {
+          "FlightNum": "9HY9SWR",
+          "DestCountry": "AU",
+          "OriginWeather": "Sunny",
+          "OriginCityName": "Frankfurt am Main",
+          "AvgTicketPrice": 841.2656419677076,
+          "DistanceMiles": 10247.856675613455,
+          "FlightDelay": false,
+          "DestWeather": "Rain",
+          "Dest": "Sydney Kingsford Smith International Airport",
+          "FlightDelayType": "No Delay",
+          "OriginCountry": "DE",
+          "dayOfWeek": 0,
+          "DistanceKilometers": 16492.32665375846,
+          "timestamp": "2023-07-03T00:00:00",
+          "DestLocation": {
+            "lat": "-33.94609833",
+            "lon": "151.177002"
+          },
+          "DestAirportID": "SYD",
+          "Carrier": "Kibana Airlines",
+          "Cancelled": false,
+          "FlightTimeMin": 1030.7704158599038,
+          "Origin": "Frankfurt am Main Airport",
+          "OriginLocation": {
+            "lat": "50.033333",
+            "lon": "8.570556"
+          },
+          "DestRegion": "SE-BD",
+          "OriginAirportID": "FRA",
+          "OriginRegion": "DE-HE",
+          "DestCityName": "Sydney",
+          "FlightTimeHour": 17.179506930998397,
+          "FlightDelayMin": 0
+        }
+      },
+      {
+        "_index": "kibana_sample_data_flights",
+        "_id": "H6mMTIkBSmemQElgy_g_",
+        "_score": 1.0,
+        "_source": {
+          "FlightNum": "X98CCZO",
+          "DestCountry": "IT",
+          "OriginWeather": "Clear",
+          "OriginCityName": "Cape Town",
+          "AvgTicketPrice": 882.9826615595518,
+          "DistanceMiles": 5482.606664853586,
+          "FlightDelay": false,
+          "DestWeather": "Sunny",
+          "Dest": "Venice Marco Polo Airport",
+          "FlightDelayType": "No Delay",
+          "OriginCountry": "ZA",
+          "dayOfWeek": 0,
+          "DistanceKilometers": 8823.40014044213,
+          "timestamp": "2023-07-03T18:27:00",
+          "DestLocation": {
+            "lat": "45.505299",
+            "lon": "12.3519"
+          },
+          "DestAirportID": "VE05",
+          "Carrier": "Logstash Airways",
+          "Cancelled": false,
+          "FlightTimeMin": 464.3894810759016,
+          "Origin": "Cape Town International Airport",
+          "OriginLocation": {
+            "lat": "-33.96480179",
+            "lon": "18.60169983"
+          },
+          "DestRegion": "IT-34",
+          "OriginAirportID": "CPT",
+          "OriginRegion": "SE-BD",
+          "DestCityName": "Venice",
+          "FlightTimeHour": 7.73982468459836,
+          "FlightDelayMin": 0
+        }
+      }
+    ]
+  },
+  "ecommerce": {
+    "alias": "kibana_sample_data_ecommerce",
+    "mappings": [
+      {
+        "category": "text"
+      },
+      {
+        "category.keyword": "keyword"
+      },
+      {
+        "currency": "keyword"
+      },
+      {
+        "customer_birth_date": "date"
+      },
+      {
+        "customer_first_name": "text"
+      },
+      {
+        "customer_first_name.keyword": "keyword"
+      },
+      {
+        "customer_full_name": "text"
+      },
+      {
+        "customer_full_name.keyword": "keyword"
+      },
+      {
+        "customer_gender": "keyword"
+      },
+      {
+        "customer_id": "keyword"
+      },
+      {
+        "customer_last_name": "text"
+      },
+      {
+        "customer_last_name.keyword": "keyword"
+      },
+      {
+        "customer_phone": "keyword"
+      },
+      {
+        "day_of_week": "keyword"
+      },
+      {
+        "email": "keyword"
+      },
+      {
+        "manufacturer": "text"
+      },
+      {
+        "manufacturer.keyword": "keyword"
+      },
+      {
+        "order_date": "date"
+      },
+      {
+        "order_id": "keyword"
+      },
+      {
+        "sku": "keyword"
+      },
+      {
+        "type": "keyword"
+      },
+      {
+        "user": "keyword"
+      }
+    ],
+    "description": "This dataset can be used to answer business related ecommerce questions such as \"Which customer has purchased the most products\" or \"Which day of the week to we sell the most on\".",
+    "sampleData": [
+      {
+        "_index": "kibana_sample_data_ecommerce",
+        "_id": "86mMTIkBSmemQElg3_-P",
+        "_score": 1.0,
+        "_source": {
+          "category": [
+            "Men's Clothing"
+          ],
+          "currency": "EUR",
+          "customer_first_name": "Eddie",
+          "customer_full_name": "Eddie Underwood",
+          "customer_gender": "MALE",
+          "customer_id": 38,
+          "customer_last_name": "Underwood",
+          "customer_phone": "",
+          "day_of_week": "Monday",
+          "day_of_week_i": 0,
+          "email": "eddie@underwood-family.zzz",
+          "manufacturer": [
+            "Elitelligence",
+            "Oceanavigations"
+          ],
+          "order_date": "2023-07-24T09:28:48+00:00",
+          "order_id": 584677,
+          "products": [
+            {
+              "base_price": 11.99,
+              "discount_percentage": 0,
+              "quantity": 1,
+              "manufacturer": "Elitelligence",
+              "tax_amount": 0,
+              "product_id": 6283,
+              "category": "Men's Clothing",
+              "sku": "ZO0549605496",
+              "taxless_price": 11.99,
+              "unit_discount_amount": 0,
+              "min_price": 6.35,
+              "_id": "sold_product_584677_6283",
+              "discount_amount": 0,
+              "created_on": "2016-12-26T09:28:48+00:00",
+              "product_name": "Basic T-shirt - dark blue/white",
+              "price": 11.99,
+              "taxful_price": 11.99,
+              "base_unit_price": 11.99
+            },
+            {
+              "base_price": 24.99,
+              "discount_percentage": 0,
+              "quantity": 1,
+              "manufacturer": "Oceanavigations",
+              "tax_amount": 0,
+              "product_id": 19400,
+              "category": "Men's Clothing",
+              "sku": "ZO0299602996",
+              "taxless_price": 24.99,
+              "unit_discount_amount": 0,
+              "min_price": 11.75,
+              "_id": "sold_product_584677_19400",
+              "discount_amount": 0,
+              "created_on": "2016-12-26T09:28:48+00:00",
+              "product_name": "Sweatshirt - grey multicolor",
+              "price": 24.99,
+              "taxful_price": 24.99,
+              "base_unit_price": 24.99
+            }
+          ],
+          "sku": [
+            "ZO0549605496",
+            "ZO0299602996"
+          ],
+          "taxful_total_price": 36.98,
+          "taxless_total_price": 36.98,
+          "total_quantity": 2,
+          "total_unique_products": 2,
+          "type": "order",
+          "user": "eddie",
+          "geoip": {
+            "country_iso_code": "EG",
+            "location": {
+              "lon": 31.3,
+              "lat": 30.1
+            },
+            "region_name": "Cairo Governorate",
+            "continent_name": "Africa",
+            "city_name": "Cairo"
+          },
+          "event": {
+            "dataset": "sample_ecommerce"
+          }
+        }
+      },
+      {
+        "_index": "kibana_sample_data_ecommerce",
+        "_id": "9KmMTIkBSmemQElg3_-P",
+        "_score": 1.0,
+        "_source": {
+          "category": [
+            "Women's Clothing"
+          ],
+          "currency": "EUR",
+          "customer_first_name": "Mary",
+          "customer_full_name": "Mary Bailey",
+          "customer_gender": "FEMALE",
+          "customer_id": 20,
+          "customer_last_name": "Bailey",
+          "customer_phone": "",
+          "day_of_week": "Sunday",
+          "day_of_week_i": 6,
+          "email": "mary@bailey-family.zzz",
+          "manufacturer": [
+            "Champion Arts",
+            "Pyramidustries"
+          ],
+          "order_date": "2023-07-23T21:59:02+00:00",
+          "order_id": 584021,
+          "products": [
+            {
+              "base_price": 24.99,
+              "discount_percentage": 0,
+              "quantity": 1,
+              "manufacturer": "Champion Arts",
+              "tax_amount": 0,
+              "product_id": 11238,
+              "category": "Women's Clothing",
+              "sku": "ZO0489604896",
+              "taxless_price": 24.99,
+              "unit_discount_amount": 0,
+              "min_price": 11.75,
+              "_id": "sold_product_584021_11238",
+              "discount_amount": 0,
+              "created_on": "2016-12-25T21:59:02+00:00",
+              "product_name": "Denim dress - black denim",
+              "price": 24.99,
+              "taxful_price": 24.99,
+              "base_unit_price": 24.99
+            },
+            {
+              "base_price": 28.99,
+              "discount_percentage": 0,
+              "quantity": 1,
+              "manufacturer": "Pyramidustries",
+              "tax_amount": 0,
+              "product_id": 20149,
+              "category": "Women's Clothing",
+              "sku": "ZO0185501855",
+              "taxless_price": 28.99,
+              "unit_discount_amount": 0,
+              "min_price": 15.65,
+              "_id": "sold_product_584021_20149",
+              "discount_amount": 0,
+              "created_on": "2016-12-25T21:59:02+00:00",
+              "product_name": "Shorts - black",
+              "price": 28.99,
+              "taxful_price": 28.99,
+              "base_unit_price": 28.99
+            }
+          ],
+          "sku": [
+            "ZO0489604896",
+            "ZO0185501855"
+          ],
+          "taxful_total_price": 53.98,
+          "taxless_total_price": 53.98,
+          "total_quantity": 2,
+          "total_unique_products": 2,
+          "type": "order",
+          "user": "mary",
+          "geoip": {
+            "country_iso_code": "AE",
+            "location": {
+              "lon": 55.3,
+              "lat": 25.3
+            },
+            "region_name": "Dubai",
+            "continent_name": "Asia",
+            "city_name": "Dubai"
+          },
+          "event": {
+            "dataset": "sample_ecommerce"
+          }
+        }
+      }
+    ]
+  },
+  "logs": {
+    "alias": "kibana_sample_data_logs",
+    "mappings": {
+      "kibana_sample_data_logs": {
+        "mappings": {
+          "properties": {
+            "@timestamp": {
+              "type": "alias",
+              "path": "timestamp"
+            },
+            "agent": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "bytes": {
+              "type": "long"
+            },
+            "clientip": {
+              "type": "ip"
+            },
+            "event": {
+              "properties": {
+                "dataset": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "extension": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "geo": {
+              "properties": {
+                "coordinates": {
+                  "type": "geo_point"
+                },
+                "dest": {
+                  "type": "keyword"
+                },
+                "src": {
+                  "type": "keyword"
+                },
+                "srcdest": {
+                  "type": "keyword"
+                }
+              }
+            },
+            "host": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "index": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "ip": {
+              "type": "ip"
+            },
+            "ip_range": {
+              "type": "ip_range"
+            },
+            "machine": {
+              "properties": {
+                "os": {
+                  "type": "text",
+                  "fields": {
+                    "keyword": {
+                      "type": "keyword",
+                      "ignore_above": 256
+                    }
+                  }
+                },
+                "ram": {
+                  "type": "long"
+                }
+              }
+            },
+            "memory": {
+              "type": "double"
+            },
+            "message": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "phpmemory": {
+              "type": "long"
+            },
+            "referer": {
+              "type": "keyword"
+            },
+            "request": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "response": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "tags": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "timestamp": {
+              "type": "date"
+            },
+            "timestamp_range": {
+              "type": "date_range"
+            },
+            "url": {
+              "type": "text",
+              "fields": {
+                "keyword": {
+                  "type": "keyword",
+                  "ignore_above": 256
+                }
+              }
+            },
+            "utc_time": {
+              "type": "date"
+            }
+          }
+        }
+      }
+    },
+    "description": "This dataset can be used to answer questions like \"How many 401 errors have there been in the last year?\" or \"Which operating system had the most errors?\"",
+    "sampleData": [
+      {
+        "_index": "kibana_sample_data_logs",
+        "_id": "Hzsy0YIBUHhEKR_5ywQl",
+        "_score": 1.0,
+        "_source": {
+          "agent": "Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1",
+          "bytes": 6219,
+          "clientip": "223.87.60.27",
+          "extension": "deb",
+          "geo": {
+            "srcdest": "US:US",
+            "src": "US",
+            "dest": "US",
+            "coordinates": {
+              "lat": 39.41042861,
+              "lon": -88.8454325
+            }
+          },
+          "host": "artifacts.elastic.co",
+          "index": "kibana_sample_data_logs",
+          "ip": "223.87.60.27",
+          "machine": {
+            "ram": 8589934592,
+            "os": "win 8"
+          },
+          "memory": null,
+          "message": "223.87.60.27 - - [2018-07-22T00:39:02.912Z] \"GET /elasticsearch/elasticsearch-6.3.2.deb_1 HTTP/1.1\" 200 6219 \"-\" \"Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1\"",
+          "phpmemory": null,
+          "referer": "http://twitter.com/success/wendy-lawrence",
+          "request": "/elasticsearch/elasticsearch-6.3.2.deb",
+          "response": 200,
+          "tags": [
+            "success",
+            "info"
+          ],
+          "timestamp": "2022-08-14T00:39:02.912Z",
+          "url": "https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.3.2.deb_1",
+          "utc_time": "2022-08-14T00:39:02.912Z",
+          "event": {
+            "dataset": "sample_web_logs"
+          }
+        }
+      },
+      {
+        "_index": "kibana_sample_data_logs",
+        "_id": "IDsy0YIBUHhEKR_5ywQl",
+        "_score": 1.0,
+        "_source": {
+          "agent": "Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1",
+          "bytes": 6850,
+          "clientip": "130.246.123.197",
+          "extension": "",
+          "geo": {
+            "srcdest": "US:IN",
+            "src": "US",
+            "dest": "IN",
+            "coordinates": {
+              "lat": 38.58338806,
+              "lon": -86.46248778
+            }
+          },
+          "host": "www.elastic.co",
+          "index": "kibana_sample_data_logs",
+          "ip": "130.246.123.197",
+          "machine": {
+            "ram": 3221225472,
+            "os": "win 8"
+          },
+          "memory": null,
+          "message": "130.246.123.197 - - [2018-07-22T03:26:21.326Z] \"GET /beats/metricbeat_1 HTTP/1.1\" 200 6850 \"-\" \"Mozilla/5.0 (X11; Linux x86_64; rv:6.0a1) Gecko/20110421 Firefox/6.0a1\"",
+          "phpmemory": null,
+          "referer": "http://www.elastic-elastic-elastic.com/success/james-mcdivitt",
+          "request": "/beats/metricbeat",
+          "response": 200,
+          "tags": [
+            "success",
+            "info"
+          ],
+          "timestamp": "2022-08-14T03:26:21.326Z",
+          "url": "https://www.elastic.co/downloads/beats/metricbeat_1",
+          "utc_time": "2022-08-14T03:26:21.326Z",
+          "event": {
+            "dataset": "sample_web_logs"
+          }
+        }
+      }
+    ]
+  }
+}
