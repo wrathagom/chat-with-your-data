@@ -3,6 +3,10 @@ import streamlit as st
 import json
 from elasticsearch import Elasticsearch
 
+from shared import initialize_session_state
+
+initialize_session_state()
+
 cloud_id = st.secrets["ELASTIC_CLOUD_ID"]
 api_key = st.secrets["ELASTIC_API_KEY"]
 
@@ -11,148 +15,125 @@ es = Elasticsearch(
     api_key=api_key
 )
 
+def build_prompt(prompt, data):
+    return st.session_state.prompts[prompt].format(**data)
+
+def build_response():
+    messages = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
+    print(messages)
+
+    full_response =  openai.ChatCompletion.create(
+        model=st.session_state["openai_model"],
+        messages=messages,
+        stream=False,
+        temperature=st.session_state["temperature"]
+    )
+
+    try:
+        parsed_response = {line.split(' | ')[0]:line.split(' | ')[1] for line in full_response['choices'][0]['message']['content'].split('\n\n')}
+
+        return parsed_response
+    except IndexError:
+        print(st.session_state['messages'][-1])
+        print(full_response)
+        # TODO: implement a retry
+
+def displayMessage(role, content, extras=None):
+    with st.chat_message(role):
+        st.markdown(content)
+
+        if extras != None:
+            for extra in extras:
+                with st.expander(extra['type']):
+                    st.write(extra['body'])
+
+
+# Actual Application UI
 st.title("Elastic Data Agent")
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-if "openai_model" not in st.session_state:
-    st.session_state["openai_model"] = "gpt-3.5-turbo"
-    st.session_state["temperature"] = 0
-
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-if "prompts" not in st.session_state:
-    with open("prompts.json", 'r') as f:
-        st.session_state.prompts = json.load(f)
-
-if "datasets" not in st.session_state:
-    with open("datasets.json", 'r') as f:
-        st.session_state.datasets = json.load(f)
-
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
-
-        if "fullPrompt" in message:
-            with st.expander("Full Prompt"):
-                st.markdown(message["fullPrompt"])
-        
-        if "explanation" in message:
-            with st.expander("Explanation"):
-                st.write(message["explanation"])
+    if 'extras' in message:
+        displayMessage(message["role"], message["content"], message['extras'])
+    else:
+        displayMessage(message["role"], message["content"])
 
 if prompt := st.chat_input("What is up?"):
-    promptedContent = st.session_state.prompts['default'].format(query=prompt)
+    prompted_content = build_prompt('default', {
+        'query': prompt
+    })
 
-    with st.chat_message("user"):
-        st.markdown(prompt)
-        with st.expander("Full prompt"):
-            st.markdown(promptedContent)
+    displayMessage('user', prompt)
 
-    st.session_state.messages.append({"role": "user", "content": promptedContent})
+    # Step 1: We add the new message with full prompt
+    st.session_state.messages.append({"role": "user", "content": prompted_content})
+
+    # Step 2: Send all the messages to OpenAI
+    parsedResponse = build_response()
+
+    # Step 3: Remove the prompt formatted user query and add just the agent response.
+    st.session_state.messages.pop()
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Step 4: Add the Agent response to the messages
+    response = parsedResponse['RESPONSE']
+    extras = [{"type": "Full Prompt", "body": prompted_content}, {"type": "Full Response", "body": parsedResponse}]
+    st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
 
     # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-
-        full_response = openai.ChatCompletion.create(
-            model=st.session_state["openai_model"],
-            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-            stream=False,
-            temperature=st.session_state["temperature"]
-        )
-
-        # Remove the prompt formatted user query
-        st.session_state.messages.pop()
-        st.session_state.messages.append({"role": "user", "content": prompt, "fullPrompt": promptedContent})
-
-        parsedResponse = {line.split(' | ')[0]:line.split(' | ')[1] for line in full_response['choices'][0]['message']['content'].split('\n\n')}
-
-        response = parsedResponse['RESPONSE']
-        st.session_state.messages.append({"role": "assistant", "content": response, "explanation": parsedResponse})
-        message_placeholder.write(response)
-
-        expander = st.expander("See explanation")
-        expander.write(parsedResponse)
+    displayMessage('assistant', response, extras)
 
     if parsedResponse['TOOL'] == 'query':
         dataset = st.session_state.datasets[parsedResponse['DATASET']]
         alias = dataset['alias']
-        template = st.session_state.prompts['query']
-        promptedContent = template.format(query=prompt, mappings=json.dumps(dataset['mappings']), sampleData=json.dumps(dataset['sampleData']))
+        promptedContent = build_prompt('query', {
+            "query": prompt,
+            "alias": alias,
+            "mappings": json.dumps(dataset['mappings']),
+            "sampleData": json.dumps(dataset['sampleData'])
+        })
 
-        # with st.chat_message("assistant"):
-        #     st.markdown(prompt)
-        #     with st.expander("Full prompt"):
-        #         st.markdown(promptedContent)
+        st.session_state.messages.append({"role": "user", "content": promptedContent})
 
-        st.session_state.messages.append({"role": "assistant", "content": promptedContent})
+        parsedResponse = build_response()
 
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
+        response = parsedResponse['RESPONSE']
+        rawQuery = parsedResponse['BODY']
 
-            full_response = openai.ChatCompletion.create(
-                model=st.session_state["openai_model"],
-                messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-                stream=False,
-                temperature=st.session_state["temperature"]
-            )
+        # location = parsedResponse['LOCATION']
+        extras = [{"type": "Full Prompt", "body": promptedContent}, {"type": "Full Response", "body": parsedResponse}]
 
-            # Remove the prompt formatted assistant query
-            st.session_state.messages.pop()
-            # st.session_state.messages.append({"role": "assistant", "content": prompt, "fullPrompt": promptedContent})
+        st.session_state.messages.pop()
+        st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
 
-            parsedResponse = {line.split(' | ')[0]:line.split(' | ')[1] for line in full_response['choices'][0]['message']['content'].split('\n\n')}
+        displayMessage('assistant', response, extras)
 
+        query = rawQuery
+        # if 'size' in query:
+        #     if query['size'] > 3:
+        #         query['size'] = 3
+        # else:
+        #     query['size'] = 3
+
+        esResponse = es.sql.query(body={"query": query}, format='csv')
+
+        print(esResponse)
+
+        promptedContent = build_prompt('interpret', {
+            "query": prompt,
+            "results": esResponse
+        })
+
+        st.session_state.messages.append({"role": "user", "content": promptedContent})
+        parsedResponse = build_response()
+        try:
             response = parsedResponse['RESPONSE']
-            rawQuery = parsedResponse['BODY']
-            st.session_state.messages.append({"role": "assistant", "content": response, "fullPrompt": promptedContent, "explanation": parsedResponse})
-            message_placeholder.write(response)
+        except TypeError:
+            response = "Sorry it looks like something went wrong trying to grab that data for you."
+        extras = [{"type": "Full Prompt", "body": promptedContent}, {"type": "Full Response", "body": parsedResponse}, {"type": "Query Results", "body": esResponse}]
+        # Remove the prompt formatted assistant query
+        st.session_state.messages.pop()
+        st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
 
-            with st.expander("Full Prompt"):
-                st.write(promptedContent)
-
-            with st.expander("See explanation"):
-                st.write(parsedResponse)
-
-        query = json.loads(rawQuery)
-        if 'size' in query:
-            if query['size'] > 3:
-                query['size'] = 3
-        else:
-            query['size'] = 3
-
-        print(query)
-        esResponse = es.search(index=alias, body=query)
-
-        print(json.dumps(esResponse['hits']))
-        template = st.session_state.prompts['interpret']
-        promptedContent = template.format(query=prompt, results=json.dumps(esResponse['hits']))
-        st.session_state.messages.append({"role": "assistant", "content": promptedContent})
-
-        with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-
-            full_response = openai.ChatCompletion.create(
-                model=st.session_state["openai_model"],
-                messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-                stream=False,
-                temperature=st.session_state["temperature"]
-            )
-
-            # print(full_response)
-
-            # Remove the prompt formatted assistant query
-            st.session_state.messages.pop()
-            # st.session_state.messages.append({"role": "assistant", "content": prompt, "fullPrompt": promptedContent})
-
-            response = full_response['choices'][0]['message']['content']
-            st.session_state.messages.append({"role": "assistant", "content": response, "fullPrompt": promptedContent, "queryResults": esResponse})
-            message_placeholder.write(response)
-
-            with st.expander("Full Prompt"):
-                st.write(promptedContent)
-
-            with st.expander("Query Results"):
-                st.write(esResponse)
+        displayMessage('assistant', response, extras)
