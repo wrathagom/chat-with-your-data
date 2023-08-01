@@ -15,10 +15,12 @@ es = Elasticsearch(
     api_key=api_key
 )
 
-def build_prompt(prompt, data):
-    return st.session_state.prompts[prompt].format(**data)
+def build_prompt(prompt_name, data):
+    """Function for generating prompts from templates"""
+    return st.session_state.prompts[prompt_name].format(**data)
 
 def build_response():
+    """Function encapsulating the process of reaching out to OpenAI completions."""
     messages = [{"role": m["role"], "content": m["content"]} for m in st.session_state.messages]
     print(messages)
 
@@ -36,14 +38,15 @@ def build_response():
     except IndexError:
         print(st.session_state['messages'][-1])
         print(full_response)
-        # TODO: implement a retry
+        # I would like to implement a retry
 
-def displayMessage(role, content, extras=None):
+def display_message(role, content, extra_info=None):
+    """Function for printing messages on screen."""
     with st.chat_message(role):
         st.markdown(content)
 
-        if extras != None:
-            for extra in extras:
+        if extra_info is not None:
+            for extra in extra_info:
                 with st.expander(extra['type']):
                     st.write(extra['body'])
 
@@ -54,16 +57,16 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 for message in st.session_state.messages:
     if 'extras' in message:
-        displayMessage(message["role"], message["content"], message['extras'])
+        display_message(message["role"], message["content"], message['extras'])
     else:
-        displayMessage(message["role"], message["content"])
+        display_message(message["role"], message["content"])
 
 if prompt := st.chat_input("What is up?"):
     prompted_content = build_prompt('default', {
         'query': prompt
     })
 
-    displayMessage('user', prompt)
+    display_message('user', prompt)
 
     # Step 1: We add the new message with full prompt
     st.session_state.messages.append({"role": "user", "content": prompted_content})
@@ -77,11 +80,19 @@ if prompt := st.chat_input("What is up?"):
 
     # Step 4: Add the Agent response to the messages
     response = parsedResponse['RESPONSE']
-    extras = [{"type": "Full Prompt", "body": prompted_content}, {"type": "Full Response", "body": parsedResponse}]
+    extras = [
+        {
+            "type": "Full Prompt",
+            "body": prompted_content
+        }, {
+            "type": "Full Response",
+            "body": parsedResponse
+        }
+    ]
     st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
 
     # Display assistant response in chat message container
-    displayMessage('assistant', response, extras)
+    display_message('assistant', response, extras)
 
     if parsedResponse['TOOL'] == 'query':
         dataset = st.session_state.datasets[parsedResponse['DATASET']]
@@ -101,12 +112,24 @@ if prompt := st.chat_input("What is up?"):
         rawQuery = parsedResponse['BODY']
 
         # location = parsedResponse['LOCATION']
-        extras = [{"type": "Full Prompt", "body": promptedContent}, {"type": "Full Response", "body": parsedResponse}]
+        extras = [
+            {
+                "type": "Full Prompt",
+                "body": promptedContent
+            }, {
+                "type": "Full Response",
+                "body": parsedResponse
+            }
+        ]
 
         st.session_state.messages.pop()
-        st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response,
+            "extras": extras
+        })
 
-        displayMessage('assistant', response, extras)
+        display_message('assistant', response, extras)
 
         query = rawQuery
         # if 'size' in query:
@@ -115,7 +138,7 @@ if prompt := st.chat_input("What is up?"):
         # else:
         #     query['size'] = 3
 
-        esResponse = es.sql.query(body={"query": query}, format='csv')
+        esResponse = es.sql.query(query=query, format='csv')
 
         print(esResponse)
 
@@ -126,14 +149,31 @@ if prompt := st.chat_input("What is up?"):
 
         st.session_state.messages.append({"role": "user", "content": promptedContent})
         parsedResponse = build_response()
+
         try:
             response = parsedResponse['RESPONSE']
         except TypeError:
             response = "Sorry it looks like something went wrong trying to grab that data for you."
-        extras = [{"type": "Full Prompt", "body": promptedContent}, {"type": "Full Response", "body": parsedResponse}, {"type": "Query Results", "body": esResponse}]
+
+
+        extras = [
+            {
+                "type": "Full Prompt",
+                "body": promptedContent
+            }, {
+                "type": "Full Response",
+                "body": parsedResponse
+            }, {
+                "type": "Query Results",
+                "body": esResponse
+            }
+        ]
         # Remove the prompt formatted assistant query
         st.session_state.messages.pop()
-        st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
+        st.session_state.messages.append({
+            "role": "assistant",
+            "content": response,
+            "extras": extras
+        })
 
-        displayMessage('assistant', response, extras)
-
+        display_message('assistant', response, extras)
