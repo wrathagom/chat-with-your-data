@@ -24,6 +24,10 @@ st.session_state.newDatasetDescription = defaultNewDatasetDescription
 
 st.title('Datasets')
 
+st.write('Goal was/is to make the dataset list dynamic and injected into the query prompt. I have not gotten there yet!')
+
+st.divider()
+
 def formatMappings(mapping):
     if 'alias' in mapping:
         print('Need to handle aliases.')

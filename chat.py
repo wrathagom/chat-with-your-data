@@ -47,7 +47,6 @@ def displayMessage(role, content, extras=None):
                 with st.expander(extra['type']):
                     st.write(extra['body'])
 
-
 # Actual Application UI
 st.title("Elastic Data Agent")
 
@@ -137,3 +136,4 @@ if prompt := st.chat_input("What is up?"):
         st.session_state.messages.append({"role": "assistant", "content": response, "extras": extras})
 
         displayMessage('assistant', response, extras)
+

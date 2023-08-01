@@ -13,6 +13,10 @@ st.session_state.newPromptBody = defaultNewPromptBody
 
 st.title('Prompts')
 
+st.write('Only these three prompts would actually get user: default, query, and interpret. Might add in more dynamic tool selection in the future.')
+
+st.divider()
+
 def addNewPrompt():
     name = st.session_state.newPromptName
     body = st.session_state.newPromptBody

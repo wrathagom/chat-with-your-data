@@ -6,6 +6,12 @@ openai.api_key = st.secrets["OPENAI_API_KEY"]
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-3.5-turbo"
 
+st.title('Temperature')
+
+st.write('If you did not notice already, the chat app queries Elastic, but it does so with SQL queries. That is because SQL is easier to generate than Elastic DSL. While I was playing around with response formatting I created this simple app to play with temperature.')
+
+st.divider()
+
 
 with st.form("Temperature Test"):
     systemInput = st.text_area("System Prompt", "Hello, world!")
